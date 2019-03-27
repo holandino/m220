@@ -230,6 +230,9 @@ export default class MoviesDAO {
     const queryPipeline = [
       matchStage,
       sortStage,
+      skipStage,
+      limitStage,
+      facetStage
       // TODO Ticket: Faceted Search
       // Add the stages to queryPipeline in the correct order.
     ]
@@ -332,11 +335,81 @@ export default class MoviesDAO {
       // TODO Ticket: Get Comments
       // Implement the required pipeline.
       const pipeline = [
+        
+        //   {
+        //     '$match': {
+        //       '_id': ObjectId(id)
+        //     }
+        //   }, {
+        //     '$lookup': {
+        //       'from': 'comments', 
+        //       'localField': '_id', 
+        //       'foreignField': 'movie_id', 
+        //       'as': 'comentario'
+        //     }
+        //   }, {
+        //     '$sort': {
+        //       'comentario.date': -1
+        //     }
+        //   }
+        // ]
+
+
         {
           $match: {
             _id: ObjectId(id)
           }
-        }
+        },
+
+        {
+          "$lookup": {
+              "from": "comments",
+              "let": {"id": "$_id"},
+              "pipeline": [
+                  {"$sort": {"date": -1}},
+                  {"$match": {
+                      "$expr": {
+                          "$eq": ["$movie_id", "$$id"]
+                      }
+                  }}
+              ],
+              "as": "comments"
+          }
+      }
+        // {
+        //   '$lookup': {
+        //     'from': 'comments', 
+        //     'localField': '_id', 
+        //     'foreignField': 'movie_id', 
+        //     'as': 'comments'
+        //   }
+        // }, 
+      //   {
+      //     "$sort": { 'comments.date': -1 }
+      //  }
+        // {
+        //   '$unwind': {
+        //     'path': '$comments'
+        //   }
+        // }, 
+        // {
+        //   '$sort': {
+        //     'comments.date': -1
+        //   }
+        // }
+        // {
+        //   '$lookup': {
+        //     'from': 'comments', 
+        //     'localField': '_id', 
+        //     'foreignField': 'movie_id', 
+        //     'as': 'comments'
+        //   }
+        // },
+        // {
+        //   '$sort': {
+        //     'comments.date': -1
+        //   }
+        // }
       ]
       return await movies.aggregate(pipeline).next()
     } catch (e) {

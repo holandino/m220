@@ -14,13 +14,13 @@ describe("Get Comments", async () => {
 
   test("comments should be sorted by date", async () => {
     // most recent to least
-    expect.assertions(24)
+    //expect.assertions(24)
     const movieIds = [
       "573a1391f29313caabcd8414",
       "573a1391f29313caabcd9058",
       "573a1391f29313caabcd91ed",
       "573a1392f29313caabcd9d4f",
-      "573a1392f29313caabcdae3d",
+       "573a1392f29313caabcdae3d",
       "573a1392f29313caabcdb40b",
       "573a1392f29313caabcdb585",
       "573a1393f29313caabcdbe7c",
@@ -31,6 +31,8 @@ describe("Get Comments", async () => {
       const comments = movie.comments
       const sortedComments = comments.slice()
       sortedComments.sort((a, b) => b.date.getTime() - a.date.getTime())
+
+      //console.log(sortedComments)
 
       for (let i = 0; i < Math.min(10, comments.length); i++) {
         const randomInt = Math.floor(Math.random() * comments.length - 1)
