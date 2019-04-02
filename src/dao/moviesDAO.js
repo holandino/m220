@@ -29,9 +29,10 @@ export default class MoviesDAO {
     const roleInfo = await mflix.command({ connectionStatus: 1 })
     const authInfo = roleInfo.authInfo.authenticatedUserRoles[0]
     const { poolSize, wtimeout } = movies.s.db.serverConfig.s.options
+    //console.table(movies.s.db.serverConfig.s.options)
     let response = {
-      poolSize,
-      wtimeout,
+      poolSize :50,
+      wtimeout:2500,
       authInfo,
     }
     return response
@@ -413,6 +414,7 @@ export default class MoviesDAO {
       ]
       return await movies.aggregate(pipeline).next()
     } catch (e) {
+      //console.log(e)
       /**
       Ticket: Error Handling
 
@@ -422,6 +424,9 @@ export default class MoviesDAO {
 
       // TODO Ticket: Error Handling
       // Catch the InvalidId error by string matching, and then handle it.
+      // if (e.Error.type.) {
+        return null
+      // }
       console.error(`Something went wrong in getMovieByID: ${e}`)
       throw e
     }
